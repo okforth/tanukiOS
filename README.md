@@ -1,2 +1,2 @@
 # tanukiOS
-![main](https://i.imgur.com/YVvjqyo.png)
+![main](https://i.imgur.com/QgsAvWE.png)
