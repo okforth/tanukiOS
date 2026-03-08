@@ -37,7 +37,7 @@ org 0x0500
 %define BS 08 ; backspace
 %define LF 10 ; line feed
 %define CR 13 ; carriage feed
-%define SP 32 ; space
+%define BL 32 ; space
 
 ; ==============================================================
 ; STACK INFORMATION
@@ -247,7 +247,7 @@ errstack:
 wordlink 'word', 4
 rdword:	call rdchar	; ( -- c )
 	spop ax		; ( c -- )
-	cmp ax, SP	; whitespace character?
+	cmp ax, BL	; whitespace character?
 	jbe rdword	; skip until non-whitespace char read
 	mov ax, [inptr]
 	dec ax
@@ -258,7 +258,7 @@ rdword:	call rdchar	; ( -- c )
 .loop:	inc bx
 	call rdchar
 	spop ax
-	cmp ax, SP
+	cmp ax, BL
 	ja .loop
 
 	spush bx	; ( -- sa sl )
@@ -310,6 +310,7 @@ fdln:	mov ax, [count]		; number of lines left to read?
 
 ; fdusr ( -- )
 ; feed a line from user input to inbuf
+wordlink 'fdusr', 5
 fdusr:	spush .ok
 	spush 5
 	call type
@@ -328,7 +329,7 @@ fdusr:	spush .ok
 	cmp al, BS		; backspace?
 	je .bs			; delete key
 
-	cmp al, SP		; control character?
+	cmp al, BL		; control character?
 	jb .next		; do nothing
 
 	stosb			; store byte in al via di
@@ -367,7 +368,7 @@ fdusr:	spush .ok
 	ret
 
 .ok:	db ' ok', 13, 10
-.del:	db BS, SP, BS
+.del:	db BS, BL, BS
 
 ; --------------------------------------------------------------
 
@@ -601,11 +602,20 @@ var_here:
 	ret
 ; --------------------------------------------------------------
 
-; inbuf ( -- addr )
-wordlink 'inbuf', 5
+; in( ( -- addr )
+wordlink 'in(', 3
 var_inbuf:
 	spush inbuf
 	ret
+
+; --------------------------------------------------------------
+
+; in) ( -- addr )
+wordlink 'in)', 3
+var_inbuf64:
+	spush inbuf+64
+	ret
+
 ; --------------------------------------------------------------
 
 ; >in ( -- addr )
@@ -1972,7 +1982,7 @@ cr:
 ; emit a space
 wordlink 'space', 5
 space:
-	spush SP
+	spush BL
 	call emit
 	ret
 
@@ -2002,15 +2012,13 @@ page:	; scroll window
 
 ; BS ( -- 8 )
 wordlink 'BS', 2
-ascii_bs:
 	spush BS
 	ret
 
 ; --------------------------------------------------------------
 
-; LF ( -- 8 )
+; LF ( -- 10 )
 wordlink 'LF', 2
-ascii_lf:
 	spush LF
 	ret
 
@@ -2018,16 +2026,14 @@ ascii_lf:
 
 ; CR ( -- 13 )
 wordlink 'CR', 2
-ascii_cr:
 	spush CR
 	ret
 
 ; --------------------------------------------------------------
 
-; SP ( -- 8 )
-wordlink 'SP', 2
-ascii_sp:
-	spush SP
+; BL ( -- 32 )
+wordlink 'SPC', 3
+	spush BL
 	ret
 
 ; ==============================================================
@@ -2054,17 +2060,17 @@ write:	spop bx
 	dec si
 
 	inc cl,
-	cmp cl, 9
+	cmp cl, MAX_SECTOR
 	jbe .find
 
 	mov cl, 1
 	inc dh
-	cmp dh, 2
+	cmp dh, MAX_HEAD
 	jb .find
 
 	xor dh, dh
 	inc ch
-	cmp ch, 40
+	cmp ch, MAX_CYLINDER
 	jb .find
 
 	; CHS is set, now write!
@@ -2084,17 +2090,17 @@ write:	spop bx
 	add bx, 512
 
 	inc cl
-	cmp cl, 9
+	cmp cl, MAX_SECTOR
 	jbe .write
 
 	mov cl, 1
 	inc dh
-	cmp dh, 2
+	cmp dh, MAX_HEAD
 	jb .write
 
 	xor dh, dh
 	inc ch
-	cmp ch, 40
+	cmp ch, MAX_CYLINDER
 	jb .write
 
 	jmp .errdisk
@@ -2130,6 +2136,17 @@ words:	mov bx, [latest]
 .next:	mov bx, [bx - 3]
 	jmp .loop
 .done:	ret
+
+; --------------------------------------------------------------
+; DEBUG
+
+wordlink 'ax>', 3
+spush ax
+ret
+
+wordlink '>ax', 3
+spop ax
+ret
 
 ; --------------------------------------------------------------
 
