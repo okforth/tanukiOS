@@ -146,3 +146,11 @@ detailed view on how each Forth words are defined.
 ## Video Demo
 
 [![thumbnail](https://i.imgur.com/riUOrQt.png)](https://i.imgur.com/iUDwRDy.mp4)
+
+## Honorable Mention
+
+I was greatly inspired by Virgil Dupras' [Collapse OS](http://collapseos.org/)
+and his [Tumble Forth](http://tumbleforth.hardcoded.net/) series
+which helped jump start my interest in Forth and its surrounding
+philosophies. His influnce is apparent here, especially when you
+compare the dictionary's word list his Collapse OS.
