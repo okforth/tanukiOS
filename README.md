@@ -49,8 +49,8 @@ to enter more complex environments.
 
 ## Features
 
-- Bootloader: Runs on real hardware and can boot from a floppy
-  disk or a USB stick.
+- Bootloader: Runs on real hardware and can boot from floppy
+  disks or USB drives.
 
 - Forth microkernel: A minimal Forth core that is capable of
   expanding itself at runtime.
@@ -58,7 +58,7 @@ to enter more complex environments.
 - Interactive REPL: Provides direct user input and evaluation.
 
 - Block storage: 32 disk blocks for persistent storage of
-  programs and text between sessions.
+  Forth source code and text between sessions.
 
 - Line-based text editor: Simple yet capable editor for
   modifying content within block storage.
@@ -140,17 +140,26 @@ ret
 
 After the boot process, the instruction immediately jumps to the
 `interpret` word which loops back upon itself and waits for user
-input. See `kernel.asm` under this respository for more a more
+input. See `kernel.asm` under this respository for a more
 detailed view on how each Forth words are defined.
+
 
 ## Video Demo
 
 [![thumbnail](https://i.imgur.com/riUOrQt.png)](https://i.imgur.com/iUDwRDy.mp4)
+
+
+## Name
+
+The name "tanuki" references the Japanese raccoon dog, a creature
+often associated with cleverness and transformation — here a
+metaphor for a small system that can grow and reshape itself.
+
 
 ## Honorable Mention
 
 I was greatly inspired by Virgil Dupras' [Collapse OS](http://collapseos.org/)
 and his [Tumble Forth](http://tumbleforth.hardcoded.net/) series
 which helped jump start my interest in Forth and its surrounding
-philosophies. His influnce is apparent here, especially when you
-compare the dictionary's word list his Collapse OS.
+philosophies. His influence is apparent here, especially when
+you compare the dictionary's word list with his Collapse OS.
