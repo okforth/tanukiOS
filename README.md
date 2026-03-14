@@ -1,11 +1,11 @@
-### tanuki OS
+# tanuki OS
 
 A small 16-bit Forth operating system for the x86.
 
 ![main](https://i.imgur.com/veeE0bz.png)
 
 
-#### About
+## About
 
 tanuki OS is a small bare-metal operating system designed from
 the ground up with the philosophy of extreme software minimalism
@@ -47,7 +47,7 @@ The OS also has bootstrapping capabilities, allowing the user
 to enter more complex environments.
 
 
-#### Features
+## Features
 
 - Bootloader: Runs on real hardware and can boot from a floppy
   disk or a USB stick.
@@ -69,7 +69,7 @@ to enter more complex environments.
 - Disk I/O: Read and write access to floppy disks.
 
 
-#### Installation
+## Installation
 
 Ensure you have QEMU and NASM installed on your system.
 
@@ -101,7 +101,7 @@ boot from it, the process should look something like this:
 5. Eject and remove the USB-drive.
 
 
-#### Design
+## Design
 
 At the core, the kernel is a "dictionary" comprised of "words"
 stringed together as a linked list. When a word is read from the
@@ -121,16 +121,28 @@ The structure of a word laid out as such:
 ```
 
 Where `name` is the name of a word, `link` points the previous
-dictionary entry.
+dictionary entry, `length + flag` holds the length of the name
+and a flag to indicate the "immediateness" of a word (whether
+the word get compiled or immediately executed during compilation
+mode).
 
-For example, `dup` is defined :
+For example, `dup` is defined in this manner:
 
 ```
-db 'dup'
-dw prev_addr
-db 3
-mov ax, [bp]
+db 'dup'      ; name
+dw prev_addr  ; link
+db 3          ; length + flag
+mov ax, [bp]  ; payload
 add bp, 2
 mov [bp], ax
 ret
 ```
+
+After the boot process, the instruction immediately jumps to the
+`interpret` word which loops back upon itself and waits for user
+input. See `kernel.asm` under this respository for more a more
+detailed view on how each Forth words are defined.
+
+## Gallery
+
+![demo](https://i.imgur.com/iUDwRDy.mp4)
