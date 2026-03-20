@@ -824,7 +824,7 @@ hide:	call tick
 	spop bx
 	test bx, bx
 	jz errword
-	mov [bx - 1], 0
+	mov byte [bx - 1], 0
 	ret
 
 ; --------------------------------------------------------------
@@ -1675,7 +1675,7 @@ xor:	spop ax
 ; lshift ( n u -- n<<u )
 wordlink 'lshift', 6
 lshift:	spop cx
-	shl word [bp], cx
+	shl word [bp], cl
 	ret
 
 ; --------------------------------------------------------------
@@ -1683,7 +1683,7 @@ lshift:	spop cx
 ; rshift ( n u -- n>>u )
 wordlink 'rshift', 6
 rshift:	spop cx
-	shr word [bp], cx
+	shr word [bp], cl
 	ret
 
 ; --------------------------------------------------------------
@@ -2047,7 +2047,7 @@ write:	spop bx
 	mov si, bx
 	add si, si	; convert block number to sector count
 	mov cx, 10
-	shl bx, cx
+	shl bx, cl
 	add bx, 0x7e00	; addr of block in memory
 
 	; beginning of block memory in disk
